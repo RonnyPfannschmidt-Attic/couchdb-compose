@@ -1,0 +1,23 @@
+doc:
+  _id: _design/glass_process
+  language: javascript
+
+load:
+- views/*.yml
+- shows.yml
+- rewrites.yml
+
+inclusions:
+  underscore:
+    repo: ...
+    version: latest
+    file: underscore.js
+    attachment: true
+    commonjs: true
+
+attachments:
+  - html/*.html
+  - images/*.png
+
+preprocessors:
+  - coffeescript

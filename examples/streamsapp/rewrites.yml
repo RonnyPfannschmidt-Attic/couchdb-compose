@@ -1,0 +1,5 @@
+- from: /lines/:step/:stream
+  to: _list/lines/lines/
+  query:
+    startkey: [ ':step', ':stream' ]
+    endkey: [ ':step', ':stream', {} ]
