@@ -3,7 +3,7 @@ doc:
   language: javascript
 
 load:
-- views/*.yml
+- views.yml
 - shows.yml
 - rewrites.yml
 

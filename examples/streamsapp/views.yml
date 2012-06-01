@@ -1,12 +1,12 @@
 streams:
-  map.coffee
+  map.coffee: >
     (doc) ->
       if doc.doc_type == "juggler:Task"
-      emit [doc._id], null;
+        emit [doc._id], null
       if doc.stream
         emit [doc.task, doc.step], doc.stream
       return
-  reduce.coffee: |
+  reduce.coffee: >
     (key, values, rereduce) ->
       if rereduce
         items = values.reduce Array.concat
@@ -20,7 +20,7 @@ streams:
       key for key in unique
 
 lines:
-  map.coffee:
+  map.coffee: >
     (doc) ->
       if doc.stream && doc.line
         emit [doc.step, doc.stream, doc.lineno], doc.line
