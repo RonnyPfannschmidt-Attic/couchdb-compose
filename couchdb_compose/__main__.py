@@ -1,12 +1,20 @@
+from __future__ import print_function
 import py
-import yaml
+import json
 from couchdb_compose.composer import Composer, actions
 
-def main(argv=None):
-    composer = Composer(py.path.local())
+from argparse import ArgumentParser
+parser = ArgumentParser()
+
+parser.add_argument('path', nargs='?', default=py.std.os.getcwd())
+
+
+def main():
+    args = parser.parse_args()
+    composer = Composer(py.path.local(args.path))
     for action in actions:
-        print action
+        print('start', action.__name__, file=py.std.sys.stderr)
         action(composer)
-    print yaml.dump(composer.doc)
+    json.dump(composer.doc.keys(), py.std.sys.stdout, indent=2)
 
 main()

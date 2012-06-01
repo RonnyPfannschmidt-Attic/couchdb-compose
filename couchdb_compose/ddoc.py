@@ -8,10 +8,6 @@ def path_2_attrchain(path):
     return path.split('/')
 
 
-def do_glob(match, basepath):
-    for item in basepath.visit(match):
-        yield basepath.bestrelto(item)
-
 
 def load_objects(composer):
     #XXX: conflicts
@@ -19,8 +15,9 @@ def load_objects(composer):
     listing = composer.config['load']
     paths = []
     for item in listing:
+        print item
         if '*' in item:
-            paths.extend(do_glob(item, composer.path))
+            raise NotImplemented
         else:
             paths.append(item)
 

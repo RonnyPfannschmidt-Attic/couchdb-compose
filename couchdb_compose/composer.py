@@ -17,6 +17,8 @@ class Composer(object):
         d[attrs[-1]] = data #XXX: conflicts
 
 from .ddoc import load_objects
-actions = [load_objects]
+from .preprocess import run_preprocessors
+
+actions = [load_objects, run_preprocessors]
 
 
