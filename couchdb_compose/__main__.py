@@ -6,13 +6,26 @@ from couchdb_compose.composer import Composer, actions
 from argparse import ArgumentParser
 parser = ArgumentParser()
 
-parser.add_argument('path', nargs='?', default=py.std.os.getcwd())
+parser.add_argument('--path', nargs='?', default=py.std.os.getcwd())
+subparsers = parser.add_subparsers()
+
+
+
+def show(composer):
+    json.dump(composer.doc.keys(), py.std.sys.stdout, indent=2)
+
+
+show_parser = subparsers.add_parser('show')
+show_parser.set_defaults(func=show)
+
+
 
 
 def main():
     args = parser.parse_args()
     composer = Composer(py.path.local(args.path))
     composer.run_actions(actions)
-    json.dump(composer.doc.keys(), py.std.sys.stdout, indent=2)
+    args.func(composer)
+    
 
 main()
