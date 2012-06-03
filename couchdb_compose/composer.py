@@ -4,8 +4,8 @@ import yaml
 import copy
 
 class Composer(object):
-    def __init__(self, path):
 
+    def __init__(self, path):
         self.path = path
         with path.join('couchdb-compose.yml').open() as fp:
             self.config = yaml.load(fp)
