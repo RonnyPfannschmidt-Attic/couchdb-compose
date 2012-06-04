@@ -16,6 +16,7 @@ setup(
         'Jinja2',
         'Hamlish-Jinja',
         'MarkupSafe',
+        'py',
     ],
     
     setup_requires=[
