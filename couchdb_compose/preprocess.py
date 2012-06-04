@@ -11,7 +11,7 @@ def commonjs_to_coffeescript(path, name, data):
         except ProgramError, e:
             print repr(data)
             raise SyntaxError(e.args[0])
-        return name[:-len(DOT_COFFEE)], data
+        return name[:-len(DOT_COFFEE)], data.strip()
 
 preprocessors = [commonjs_to_coffeescript]
 

@@ -30,8 +30,8 @@ def deploy_views(args, composer):
 
     for name, view in newdoc.get('views', {}).items():
         if isinstance(view, dict) and 'map' in view:
-            print('request view', name, view)
-            list(db.view(view_basename+name, limit=1, stale='update_after'))
+            print('request view', view_basename+name)
+            db.view(view_basename+name, limit=0, stale='update_after').first()
             break # stop after the first
 
     found = True
@@ -43,8 +43,8 @@ def deploy_views(args, composer):
             if task['database'] == db.dbname and \
                task['design_document'] == newdoc['_id']:
                 found = True
-                print('progress', task['progress'])
-    print('done')
+                print('progress', task['progress'],end='\r')
+    print('\ndone')
 
 
 def drop_viewdata(args, composer):
