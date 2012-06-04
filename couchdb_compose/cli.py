@@ -4,25 +4,22 @@ import py
 
 
 def show(args, composer):
-    py.std.pprint(composer.doc, py.std.sys.stdout)
+    py.std.pprint.pprint(composer.doc, py.std.sys.stdout)
 
 
 def push(args, composer):
+    db = args.database
     if args.deploy_views:
         deploy_views(args, composer)
 
     import couchdbkit
-    server = couchdbkit.Server()
-    db = server.get_or_create_db(args.database)
     print('storing to', db, composer.doc['_id'])
     # we copy here to avoid _rev being set
     db.save_doc(composer.doc.copy(), force_update=True)
 
 
 def deploy_views(args, composer):
-    import couchdbkit
-    server = couchdbkit.Server()
-    db = server.get_or_create_db(args.database)
+    db = args.database
     newid = composer.doc['_id'] + ":view-deploy"
     print('storing to', db, newid)
     newdoc = dict(composer.doc, _id=newid)
@@ -36,11 +33,11 @@ def deploy_views(args, composer):
             print('request view', name, view)
             list(db.view(view_basename+name, limit=1, stale='update_after'))
             break # stop after the first
-    py.std
+
     found = True
     while found:
         py.std.time.sleep(.1)
-        tasks = server.active_tasks()
+        tasks = db.server.active_tasks()
         found = False
         for task in tasks:
             if task['database'] == db.dbname and \
@@ -49,6 +46,14 @@ def deploy_views(args, composer):
                 print('progress', task['progress'])
     print('done')
 
+
+def drop_viewdata(args, composer):
+    db = args.database
+    print('removing all ddocs')
+    for ddoc in db.all_docs(startkey='_design', endkey='_desigo'):
+        db.delete_doc(ddoc['id'])
+    print('view cleanup')
+    db.view_cleanup()
 
 from argparse import ArgumentParser
 parser = ArgumentParser(prog='couchdb-compose')
@@ -61,7 +66,6 @@ show_parser.set_defaults(func=show)
 
 push_parser = subparsers.add_parser('push', help='stores the composed doc to the db')
 push_parser.set_defaults(func=push)
-push_parser.add_argument('database')
 push_parser.add_argument('--deploy-views', action='store_true',
                          help='deploy views before pushing')
 
@@ -70,4 +74,29 @@ deploy_views_parser = subparsers.add_parser('deploy_views',
                                             help='stores the ddoc to a different id and updates all views, '
                                                  'usefull for view updates before a push')
 deploy_views_parser.set_defaults(func=deploy_views)
-deploy_views_parser.add_argument('database')
+
+
+drop_viewdata_parser = subparsers.add_parser('drop_viewdata',
+                                               help='drop all views and all view data\n'
+                                                    'use with caution, only for testing')
+drop_viewdata_parser.set_defaults(func=drop_viewdata)
+
+
+
+def get_database(name_or_uri):
+    import couchdbkit
+    if '/' in name_or_uri:
+        return couchdbkit.Database(name_or_uri)
+    else:
+        return couchdbkit.Server().get_or_create_db(name_or_uri)
+
+with_database = [
+    push_parser,
+    deploy_views_parser,
+    drop_viewdata_parser,
+]
+
+for item in with_database:
+    item.add_argument('database', type=get_database)
+
+
