@@ -8,7 +8,9 @@ setup(
     install_requires=[
         'coffeescript',
         'couchdbkit',
-        'jinja2',
+        'Jinja2',
+        'Hamlish-Jinja',
+        'MarkupSafe',
     ],
     
     setup_requires=[
