@@ -48,14 +48,28 @@ def deploy_views(args, composer):
     print('storing to', db, newid)
     newdoc = dict(composer.doc, _id=newid)
     view_basename = newid.split('/', 1)[1] + '/'
-
+    print(view_basename)
     
     db.save_doc(newdoc, force_update=True)
 
-    for view in newdoc['views']:
-        list(db.view(view_basename+view, limit=0, stale='update_after'))
-        break # stop after the first
-
+    for name, view in newdoc.get('views', {}).items():
+        if isinstance(view, dict) and 'map' in view:
+            print('request view', name, view)
+            list(db.view(view_basename+name, limit=1, stale='update_after'))
+            break # stop after the first
+    py.std
+    found = True
+    while found:
+        py.std.time.sleep(.1)
+        tasks = server.active_tasks()
+        found = False
+        for task in tasks:
+            if task['database'] == db.dbname and \
+               task['design_document'] == newdoc['_id']:
+                found = True
+                print('progress', task['progress'])
+    print('done')
+                
 
 deploy_views_parser = subparsers.add_parser('deploy_views', 
                                             help='stores the ddoc to a different id and updates all views, '

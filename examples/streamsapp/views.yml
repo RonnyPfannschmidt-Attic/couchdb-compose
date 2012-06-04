@@ -1,3 +1,11 @@
+test:
+  map.coffee: >
+    (doc) ->
+      for i in [1..100]
+        a = 1
+      emit doc._id, null
+      return
+
 streams:
   map.coffee: >
     (doc) ->
@@ -6,6 +14,7 @@ streams:
       if doc.stream
         emit [doc.task, doc.step], doc.stream
       return
+
   reduce.coffee: >
     (key, values, rereduce) ->
       if rereduce
