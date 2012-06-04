@@ -53,7 +53,7 @@ def deploy_views(args, composer):
     db.save_doc(newdoc, force_update=True)
 
     for view in newdoc['views']:
-        list(db.view(view_basename+view, limit=1))
+        list(db.view(view_basename+view, limit=0, stale='update_after'))
         break # stop after the first
 
 
