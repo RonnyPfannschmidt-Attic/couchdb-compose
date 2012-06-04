@@ -1,43 +1,22 @@
 
 from __future__ import print_function
 import py
-import json
-
-
-from argparse import ArgumentParser
-parser = ArgumentParser(prog='couchdb-compose')
-
-
-parser.add_argument('--path', nargs='?', default=py.std.os.getcwd())
-subparsers = parser.add_subparsers()
 
 
 def show(args, composer):
-    json.dump(composer.doc.keys(), py.std.sys.stdout, indent=2)
-
-
-show_parser = subparsers.add_parser('show')
-show_parser.set_defaults(func=show)
+    py.std.pprint(composer.doc, py.std.sys.stdout)
 
 
 def push(args, composer):
     if args.deploy_views:
         deploy_views(args, composer)
-    
+
     import couchdbkit
     server = couchdbkit.Server()
     db = server.get_or_create_db(args.database)
     print('storing to', db, composer.doc['_id'])
     # we copy here to avoid _rev being set
     db.save_doc(composer.doc.copy(), force_update=True)
-
-
-push_parser = subparsers.add_parser('push', help='stores the composed doc to the db')
-push_parser.set_defaults(func=push)
-push_parser.add_argument('database')
-push_parser.add_argument('--deploy-views', action='store_true',
-                         help='deploy views before pushing',
-                        )
 
 
 def deploy_views(args, composer):
@@ -49,7 +28,7 @@ def deploy_views(args, composer):
     newdoc = dict(composer.doc, _id=newid)
     view_basename = newid.split('/', 1)[1] + '/'
     print(view_basename)
-    
+
     db.save_doc(newdoc, force_update=True)
 
     for name, view in newdoc.get('views', {}).items():
@@ -69,9 +48,25 @@ def deploy_views(args, composer):
                 found = True
                 print('progress', task['progress'])
     print('done')
-                
 
-deploy_views_parser = subparsers.add_parser('deploy_views', 
+
+from argparse import ArgumentParser
+parser = ArgumentParser(prog='couchdb-compose')
+
+parser.add_argument('--path', nargs='?', default=py.std.os.getcwd())
+subparsers = parser.add_subparsers()
+
+show_parser = subparsers.add_parser('show', help='show the constructed ddoc')
+show_parser.set_defaults(func=show)
+
+push_parser = subparsers.add_parser('push', help='stores the composed doc to the db')
+push_parser.set_defaults(func=push)
+push_parser.add_argument('database')
+push_parser.add_argument('--deploy-views', action='store_true',
+                         help='deploy views before pushing')
+
+
+deploy_views_parser = subparsers.add_parser('deploy_views',
                                             help='stores the ddoc to a different id and updates all views, '
                                                  'usefull for view updates before a push')
 deploy_views_parser.set_defaults(func=deploy_views)
