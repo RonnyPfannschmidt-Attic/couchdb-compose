@@ -8,7 +8,6 @@ def path_2_attrchain(path):
     return path.split('/')
 
 
-
 def load_objects(composer):
     #XXX: conflicts
 
