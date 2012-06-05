@@ -6,6 +6,13 @@ usage: couchdb-compose show [options]
        couchdb-compose deploy_views DATABASE [options]
        couchdb-compose drop_viewdata DATABASE [options]
 
+subcommands:
+    show           - show the ddoc
+    push           - push to the DATABASE
+    deploy_views   - deploy view updates (usefull before push)
+    drop_viewdata  - drop all view data and clean up the db
+
+options: 
     -h, --help      help
     --path PATH     different path for the default composer [default: ./]
     --deploy-views  deploy views before pushing the ddoc
@@ -75,6 +82,9 @@ def drop_viewdata(args, composer):
         db.delete_doc(ddoc['id'])
     print('view cleanup')
     db.view_cleanup()
+    # restart to work around COUCHDB-1491
+    # - unexpected normal termination of viewserver
+    db.server.res.post('/_restart', headers={"Content-Type": "application/json"})
 
 def get_database(args):
     name_or_uri = args["DATABASE"]
