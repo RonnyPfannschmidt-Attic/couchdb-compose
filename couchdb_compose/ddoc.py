@@ -14,7 +14,6 @@ def load_objects(composer):
     listing = composer.config['load']
     paths = []
     for item in listing:
-        print item
         if '*' in item:
             raise NotImplemented
         else:

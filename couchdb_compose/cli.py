@@ -32,7 +32,7 @@ def _dispatch(args, composer):
 
 
 def show(args, composer):
-    py.std.pprint.pprint(composer.doc, py.std.sys.stdout)
+    py.std.json.dump(composer.doc, py.std.sys.stdout, indent=1, sort_keys=True)
 
 
 def push(args, composer):
