@@ -58,7 +58,7 @@ def drop_viewdata(args, composer):
 from argparse import ArgumentParser
 parser = ArgumentParser(prog='couchdb-compose')
 
-parser.add_argument('--path', nargs='?', default=py.std.os.getcwd())
+parser.add_argument('--path', nargs='?',  default=py.path.local(), type=py.path.local)
 subparsers = parser.add_subparsers()
 
 show_parser = subparsers.add_parser('show', help='show the constructed ddoc')
