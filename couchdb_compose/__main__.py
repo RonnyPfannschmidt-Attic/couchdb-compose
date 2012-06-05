@@ -1,13 +1,19 @@
 import py
-from couchdb_compose.cli import parser
+import sys
+from couchdb_compose import cli
 from couchdb_compose.composer import Composer, actions
+from docopt import docopt
+
+def doc_main(args, composer=None):
+    print args
+    composer = composer or Composer(py.path.local(args['--path']))
+    composer.run_actions(actions)
+    cli._dispatch(args, composer)
 
 def main(argv=None, composer=None):
-    args = parser.parse_args(argv)
-    composer = composer or Composer(args.path)
-    composer.run_actions(actions)
-    args.func(args, composer)
-
-
+    if argv is None:
+        argv = sys.argv[1:]
+    args = docopt(cli.__doc__, argv=argv)
+    return doc_main(args, composer)
 if __name__ == '__main__':
     main()

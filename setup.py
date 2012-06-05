@@ -17,8 +17,9 @@ setup(
         'Hamlish-Jinja',
         'MarkupSafe',
         'py',
+        'docopt',
     ],
-    
+
     setup_requires=[
         'hgdistver',
     ],
