@@ -16,8 +16,8 @@ inclusions:
     commonjs: true
 
 attachments:
-  - html/*.html
-  - images/*.png
+  - html: '*.html'
+  - images: '*.png'
 
 preprocessors:
   - coffeescript
