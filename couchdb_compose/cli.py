@@ -62,6 +62,7 @@ def deploy_views(args, composer):
             db.view(view_basename+name, limit=0, stale='update_after').first()
             break # stop after the first
 
+    #XXX worst progres bar ever :P
     found = True
     while found:
         py.std.time.sleep(.1)
@@ -71,8 +72,8 @@ def deploy_views(args, composer):
             if task['database'] == db.dbname and \
                task['design_document'] == newdoc['_id']:
                 found = True
-                print('progress', task['progress'],end='\r')
-    print('\ndone')
+                print('progress', task['progress'], end='\r')
+    print('done       ')
 
 
 def drop_viewdata(args, composer):
