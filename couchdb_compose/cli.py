@@ -40,7 +40,6 @@ def push(args, composer):
     if args['--deploy-views']:
         deploy_views(args, composer)
 
-    import couchdbkit
     print('storing to', db, composer.doc['_id'])
     # we copy here to avoid _rev being set
     db.save_doc(composer.doc.copy(), force_update=True)
@@ -52,15 +51,14 @@ def deploy_views(args, composer):
     print('storing to', db, newid)
     newdoc = dict(composer.doc, _id=newid)
     view_basename = newid.split('/', 1)[1] + '/'
-    print(view_basename)
 
     db.save_doc(newdoc, force_update=True)
 
     for name, view in newdoc.get('views', {}).items():
         if isinstance(view, dict) and 'map' in view:
-            print('request view', view_basename+name)
-            db.view(view_basename+name, limit=0, stale='update_after').first()
-            break # stop after the first
+            print('request view', view_basename + name)
+            db.view(view_basename + name, limit=0, stale='update_after').first()
+            break  # stop after the first
 
     #XXX worst progres bar ever :P
     found = True
@@ -69,8 +67,8 @@ def deploy_views(args, composer):
         tasks = db.server.active_tasks()
         found = False
         for task in tasks:
-            if task['database'] == db.dbname and \
-               task['design_document'] == newdoc['_id']:
+            if (task['database'] == db.dbname
+                and task['design_document'] == newdoc['_id']):
                 found = True
                 print('progress', task['progress'], end='\r')
     print('done       ')

@@ -15,7 +15,7 @@ class Composer(object):
         d = self.doc
         for attr in attrs[:-1]:
             d = d.setdefault(attr, {})
-        d[attrs[-1]] = data #XXX: conflicts
+        d[attrs[-1]] = data  #XXX: conflicts
 
     def run_actions(self, actions):
         for action in actions:
