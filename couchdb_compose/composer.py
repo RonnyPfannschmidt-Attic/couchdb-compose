@@ -1,7 +1,6 @@
 from __future__ import print_function
-import py
-import yaml
 import copy
+import mimetypes
 
 class Composer(object):
 
@@ -16,14 +15,23 @@ class Composer(object):
             d = d.setdefault(attr, {})
         d[attrs[-1]] = data  #XXX: conflicts
 
+    def push_attachment(self, attachment_path):
+        attachments = self.doc.setdefault('_attachments', {})
+        content = attachment_path.read()
+        name = self.path.bestrelpath(attachment_path)
+
+        attachments[name] = {'data': content, 'content-type': mimetypes.guess_type(name)[0]}
+
+
+
     def run_actions(self, actions):
         for action in actions:
-            print('* start', action.__name__, file=py.std.sys.stderr)
+            print('* start', action.__name__)
             action(self)
 
 from .ddoc import load_objects
 from .preprocess import run_preprocessors
-
-actions = [load_objects, run_preprocessors]
+from .attachments import add_attachments
+actions = [load_objects, add_attachments, run_preprocessors]
 
 
