@@ -15,5 +15,6 @@ def main(argv=None, composer=None):
         argv = sys.argv[1:]
     args = docopt(cli.__doc__, argv=argv)
     return doc_main(args, composer)
+
 if __name__ == '__main__':
     main()
