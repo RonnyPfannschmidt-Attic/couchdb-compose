@@ -5,11 +5,10 @@ import copy
 
 class Composer(object):
 
-    def __init__(self, path):
+    def __init__(self, path, config):
         self.path = path
-        with path.join('couchdb-compose.yml').open() as fp:
-            self.config = yaml.load(fp)
-        self.doc = copy.deepcopy(self.config['doc'])
+        self.config = config
+        self.doc = copy.deepcopy(config.get('doc', {}))
 
     def push(self, attrs, data):
         d = self.doc
@@ -19,7 +18,7 @@ class Composer(object):
 
     def run_actions(self, actions):
         for action in actions:
-            print('start', action.__name__, file=py.std.sys.stderr)
+            print('* start', action.__name__, file=py.std.sys.stderr)
             action(self)
 
 from .ddoc import load_objects
