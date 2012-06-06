@@ -8,9 +8,9 @@ def commonjs_to_coffeescript(path, name, data):
     if isinstance(data, str) and name.endswith(DOT_COFFEE):
         try:
             data = coffeescript.compile(data, bare=True)
-        except ProgramError, e:
+        except ProgramError as exc:
             print repr(data)
-            raise SyntaxError(e.args[0])
+            raise SyntaxError(exc.args[0])
         return name[:-len(DOT_COFFEE)], data.strip()
 
 preprocessors = [commonjs_to_coffeescript]
@@ -25,7 +25,7 @@ def preprocess(data, path, processors):
                 print 'fail', path, k
                 raise
             if result:
-                # replace v herre so we dont process 
+                # replace v here so we dont process
                 new_k, v = result
                 data.pop(k)
                 data[new_k] = v
