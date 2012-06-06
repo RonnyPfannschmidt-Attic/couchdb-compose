@@ -15,12 +15,12 @@ class Composer(object):
             d = d.setdefault(attr, {})
         d[attrs[-1]] = data  #XXX: conflicts
 
-    def push_attachment(self, attachment_path):
+    def add_attachment(self, attachment_path):
         attachments = self.doc.setdefault('_attachments', {})
         content = attachment_path.read()
         name = self.path.bestrelpath(attachment_path)
 
-        attachments[name] = {'data': content, 'content-type': mimetypes.guess_type(name)[0]}
+        attachments[name] = {'data': content, 'content_type': mimetypes.guess_type(name)[0]}
 
 
 

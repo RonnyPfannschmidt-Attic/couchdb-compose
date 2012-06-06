@@ -6,7 +6,7 @@ def add_attachments(composer):
     for attachment in attachments:
         if isinstance(attachment, str):
             for path in composer.path.visit(attachment):
-                composer.push_attachment(path)
+                composer.add_attachment(path)
         else:
             for prefix, maybe_globs in attachment.items():
                 newpath = composer.path.join(prefix)
@@ -18,4 +18,4 @@ def add_attachments(composer):
 
                 for glob in maybe_globs:
                     for path in newpath.visit(glob):
-                        composer.push_attachment(path)
+                        composer.add_attachment(path)
