@@ -79,11 +79,17 @@ def drop_viewdata(args, composer):
     print('removing all ddocs')
     for ddoc in db.all_docs(startkey='_design', endkey='_desigo'):
         db.delete_doc(ddoc['id'])
+    db.ensure_full_commit()
     print('view cleanup')
     db.view_cleanup()
     # restart to work around COUCHDB-1491
     # - unexpected normal termination of viewserver
-    db.server.res.post('/_restart', headers={"Content-Type": "application/json"})
+    import http_parser.http
+    try:
+        db.server.res.post('/_restart', headers={"Content-Type": "application/json"})
+    except http_parser.http.NoMoreData:
+        pass
+
 
 def get_database(args):
     name_or_uri = args["DATABASE"]
