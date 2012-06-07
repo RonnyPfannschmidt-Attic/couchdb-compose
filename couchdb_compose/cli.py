@@ -20,7 +20,9 @@ options:
 """
 
 from __future__ import print_function
-import py
+import json
+import sys
+import time
 
 def _dispatch(args, composer):
     g = globals()
@@ -32,7 +34,7 @@ def _dispatch(args, composer):
 
 
 def show(args, composer):
-    py.std.json.dump(composer.doc, py.std.sys.stdout, indent=1, sort_keys=True)
+    json.dump(composer.doc, sys.stdout, indent=1, sort_keys=True)
 
 
 def push(args, composer):
@@ -63,7 +65,7 @@ def deploy_views(args, composer):
     #XXX worst progres bar ever :P
     found = True
     while found:
-        py.std.time.sleep(.1)
+        time.sleep(.1)
         tasks = db.server.active_tasks()
         found = False
         for task in tasks:
@@ -88,6 +90,8 @@ def drop_viewdata(args, composer):
     try:
         db.server.res.post('/_restart', headers={"Content-Type": "application/json"})
     except http_parser.http.NoMoreData:
+        # couchdb before 1.3 commits suicide before sending a http 200
+        # couchdb 1.3 sends a http 202 before commiting suicide
         pass
 
 
