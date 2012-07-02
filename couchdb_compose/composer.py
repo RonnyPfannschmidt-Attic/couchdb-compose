@@ -9,18 +9,27 @@ class Composer(object):
         self.config = config
         self.doc = copy.deepcopy(config.get('doc', {}))
 
+    def getlist(self, name):
+        return self.config.get(name, [])
+
     def push(self, attrs, data):
         d = self.doc
         for attr in attrs[:-1]:
             d = d.setdefault(attr, {})
         d[attrs[-1]] = data  #XXX: conflicts
 
-    def add_attachment(self, attachment_path):
-        attachments = self.doc.setdefault('_attachments', {})
+    def add_attachment_from_file(self, attachment_path):
         content = attachment_path.read()
         name = self.path.bestrelpath(attachment_path)
+        self.add_attachment(name, content)
 
-        attachments[name] = {'data': content, 'content_type': mimetypes.guess_type(name)[0]}
+    def add_attachment(self, name, content):
+        attachments = self.doc.setdefault('_attachments', {})
+        attachments[name] = {
+            'data': content,
+            'content_type': mimetypes.guess_type(name)[0],
+        }
+
 
 
 
