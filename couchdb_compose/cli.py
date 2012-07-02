@@ -1,7 +1,7 @@
 """
 couchdb-compose composes your couchdb  documents
 
-usage: couchdb-compose show [options]
+usage: couchdb-compose show [--non-verbose] [options]
        couchdb-compose push DATABASE [--deploy-views] [options]
        couchdb-compose deploy_views DATABASE [options]
        couchdb-compose drop_viewdata DATABASE [options]
@@ -16,6 +16,7 @@ options:
     -h, --help      help
     --path PATH     different path for the default composer [default: ./]
     --deploy-views  deploy views before pushing the ddoc
+    --non-verbose   replace all multiline values with '...' before display
 
 """
 
@@ -34,7 +35,12 @@ def _dispatch(args, composer):
 
 
 def show(args, composer):
-    json.dump(composer.doc, sys.stdout, indent=1, sort_keys=True)
+    doc = composer.doc
+    if args['--non-verbose']:
+        from .util import ellipsize
+        doc = ellipsize(doc)
+
+    json.dump(doc, sys.stdout, indent=1, sort_keys=True)
 
 
 def push(args, composer):
