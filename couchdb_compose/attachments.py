@@ -5,7 +5,10 @@ def add_attachments(composer):
     attachments = composer.getlist('attachments')
     for attachment in attachments:
         if isinstance(attachment, str):
-            for path in composer.path.visit(attachment):
+            found = list(composer.path.visit(attachment))
+            if not found:
+                print '! attachments for', attachment, 'not found'
+            for path in found:
                 composer.add_attachment_from_file(path)
         else:
             for prefix, maybe_globs in attachment.items():

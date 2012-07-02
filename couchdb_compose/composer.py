@@ -42,6 +42,12 @@ class Composer(object):
 from .ddoc import load_objects
 from .preprocess import run_preprocessors
 from .attachments import add_attachments
-actions = [load_objects, add_attachments, run_preprocessors]
+from .externals import include_externals
+actions = [
+    load_objects,
+    add_attachments,
+    include_externals,
+    run_preprocessors,
+]
 
 
