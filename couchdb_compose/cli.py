@@ -48,8 +48,7 @@ def show(args, composer):
         print('! key:', key, 'at index', idx, 'of path', path, 'not found')
 
 
-    json.dump(doc, sys.stdout, indent=1, sort_keys=True)
-    print()
+    print(json.dumps(doc,indent=1, sort_keys=True))
 
 
 def push(args, composer):
