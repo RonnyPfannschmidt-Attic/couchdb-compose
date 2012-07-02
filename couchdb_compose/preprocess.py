@@ -4,6 +4,7 @@ from execjs import ProgramError
 
 DOT_COFFEE = '.coffee'
 
+
 def commonjs_to_coffeescript(path, name, data):
     if isinstance(data, str) and name.endswith(DOT_COFFEE):
         try:
@@ -13,11 +14,10 @@ def commonjs_to_coffeescript(path, name, data):
             raise SyntaxError(exc.args[0])
         return name[:-len(DOT_COFFEE)], data.strip()
 
-preprocessors = [commonjs_to_coffeescript]
 
 
 def preprocess(data, path, processors):
-    for k, v in data.items():
+    for k, v in list(data.items()):
         for p in processors:
             try:
                 result = p(path, k, v)
@@ -33,6 +33,8 @@ def preprocess(data, path, processors):
             if isinstance(v, dict):
                 preprocess(v, path + (k,), processors)
 
+
+preprocessors = [commonjs_to_coffeescript]
 
 def run_preprocessors(composer):
     preprocess(composer.doc, (), preprocessors)
