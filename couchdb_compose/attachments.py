@@ -2,7 +2,7 @@
 
 def add_attachments(composer):
     #XXX: renames
-    attachments = composer.config.get('attachments')
+    attachments = composer.getlist('attachments')
     for attachment in attachments:
         if isinstance(attachment, str):
             for path in composer.path.visit(attachment):
