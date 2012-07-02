@@ -25,10 +25,11 @@ class Composer(object):
 
     def add_attachment(self, name, content):
         attachments = self.doc.setdefault('_attachments', {})
-        attachments[name] = {
+        info = attachments[name] = {
             'data': content,
             'content_type': mimetypes.guess_type(name)[0],
         }
+        return info
 
 
 
