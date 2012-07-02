@@ -11,7 +11,7 @@ def path_2_attrchain(path):
 def load_objects(composer):
     #XXX: conflicts
 
-    listing = composer.config['load']
+    listing = composer.getlist('load')
     paths = []
     for item in listing:
         if '*' in item:
