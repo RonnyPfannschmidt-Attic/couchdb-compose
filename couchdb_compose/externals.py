@@ -26,7 +26,19 @@ def maybe_download_external(external, path):
 
 
 def add_external(composer, external, path):
-    pass
+    filename = external['url'].split('/')[-1]
+    attachment = external.get('attachment')
+    content = path.join(filename).read()
+    if attachment:
+        info = composer.add_attachment(attachment, content)
+        info.update(
+            url = external.get('url'),
+            name = external.get('name'),
+        )
+    else:
+        composer.push(
+            external.get('path', [external['name']]),
+            content)
 
 
 def include_externals(composer):
