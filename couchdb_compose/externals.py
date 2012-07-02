@@ -51,6 +51,6 @@ def include_externals(composer):
 
     for external in externals:
         path = cache.ensure(external['name'], dir=1)
-        maybe_download_external(external, cache)
+        maybe_download_external(external, path)
         add_external(composer, external, path)
 
