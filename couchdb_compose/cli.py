@@ -1,7 +1,7 @@
 """
 couchdb-compose composes your couchdb  documents
 
-usage: couchdb-compose show [--non-verbose] [options]
+usage: couchdb-compose show [--non-verbose] [options] [PATH...]
        couchdb-compose push DATABASE [--deploy-views] [options]
        couchdb-compose deploy_views DATABASE [options]
        couchdb-compose drop_viewdata DATABASE [options]
@@ -40,7 +40,16 @@ def show(args, composer):
         from .util import ellipsize
         doc = ellipsize(doc)
 
+    path = args['PATH']
+    try:
+        for idx, key in enumerate(path):
+            doc = doc[key]
+    except KeyError:
+        print('! key:', key, 'at index', idx, 'of path', path, 'not found')
+
+
     json.dump(doc, sys.stdout, indent=1, sort_keys=True)
+    print()
 
 
 def push(args, composer):
