@@ -2,6 +2,7 @@
 couchdb-compose composes your couchdb  documents
 
 usage: couchdb-compose show [--non-verbose] [options] [PATH...]
+       couchdb-compose dump [options] FILE
        couchdb-compose push DATABASE [--deploy-views] [options]
        couchdb-compose deploy_views DATABASE [options]
        couchdb-compose drop_viewdata DATABASE [options]
@@ -48,7 +49,16 @@ def show(args, composer):
         print('! key:', key, 'at index', idx, 'of path', path, 'not found')
 
 
-    print(json.dumps(doc,indent=1, sort_keys=True))
+    if isinstance(doc, (str, unicode)):
+        print(' ', '  '.join(doc.splitlines(True)))
+    else:
+        print(json.dumps(doc,indent=1, sort_keys=True))
+
+
+def dump(args, composer):
+    print('dumping')
+    with open(args['FILE'], 'w') as fp:
+        json.dump(composer.doc, fp, indent=1, sort_keys=True)
 
 
 def push(args, composer):
@@ -113,7 +123,10 @@ def get_database(args):
     name_or_uri = args["DATABASE"]
     import couchdbkit
     if '/' in name_or_uri:
-        return couchdbkit.Database(name_or_uri)
+        server, dbname = name_or_uri.rsplit('/', 1)
+        assert dbname
+
+        return couchdbkit.Server(server).get_or_create_db(dbname)
     else:
         return couchdbkit.Server().get_or_create_db(name_or_uri)
 
