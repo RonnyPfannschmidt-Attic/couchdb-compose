@@ -22,8 +22,11 @@ def load_objects(composer):
     for path in paths:
         objectpath = path_2_attrchain(path)
         path = composer.path.join(path)
-        with path.open() as input:
+        input = path.read()
+        if path.ext == '.yml':
             data = yaml.load(input)
+        else:
+            data = input
 
         composer.push(objectpath, data)
 
